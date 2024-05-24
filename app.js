@@ -73,11 +73,21 @@ app.post('/product', (req, res) => {
 
 app.put('/product/:id', (req, res) => {
   const id = req.params.id
+  const { nome, preco, descricao, imagem_url } = req.body
+
+  if(!nome || !preco || !descricao || !imagem_url ) {
+    return res.status(400).json({error: 'Nome, preço, descrição e url da imagem são obrigatórios!'});
+  }
   
-  res.status(201).json({
-    status: 201,
-    data: request.body
-})
+  body = req.body
+  const queryPUT = 'UPDATE produtos SET nome = ?, preco = ?, descricao = ?, imagem_url = ? WHERE id = ?;'
+  db.query(queryPUT, [nome, preco, descricao, imagem_url, id], (err) => {
+    if(err) {
+      console.error('Erro ao atualizar os dados no banco de dados: ', err)
+      return res.status(404).json({error: 'Erro ao atualizar os dados no banco de dados.'})
+    }
+    res.status(200).json({message: 'Dados atualizados com sucesso.'})
+  })
 })
 
 app.delete('/product/:id', (req, res, next) => {
