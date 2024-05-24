@@ -23,16 +23,17 @@ db.connect((error) => {
   console.log('Conexão com o banco de dados efetuado com sucesso!')
 })
 
-//Rota GET by Raylan
+//Rota GET by Raylan refatorado by Dirceu
 
 
-app.get('/product', (req, res, next) => { 
-  db.query('SELECT * FROM produtos', function(err, rows, fields) {
-  if (err) throw err;
-  res.json({
-    status: 200,
-    data: rows,
-  })
+app.get('/product', (req, res) => {
+  const queryGET = 'SELECT * FROM produtos' 
+  db.query(queryGET, function(err, results) {
+    if(err) {
+      console.error('Erro ao realizar sua pesquisa: ', err)
+      return res.status(404).json({error: 'Item não encontrado.'})
+    }
+    res.status(200).json(results)
 });
 })
 
@@ -90,13 +91,19 @@ app.put('/product/:id', (req, res) => {
   })
 })
 
-app.delete('/product/:id', (req, res, next) => {
-  res.status(200)
-  res.json({
-    status: 200,
-    data: {
-        message: "Produto deletado com sucesso"
-      }
+//Método DELETE by Dirceu
+
+app.delete('/product/:id', (req, res) => {
+  const id = req.params.id
+
+  const queryDELETE = 'DELETE FROM produtos WHERE ID = ?';
+  db.query(queryDELETE, [id], function(err) {
+    if(err) {
+      console.error(`Erro ao deletar o item ${id}`, err)
+      return res.status(404).json({error: 'Item não encontrado.'})
+    }
+    res.status(200).json({
+      message: 'Dados deletados com sucesso!'})
   })
 })
 
