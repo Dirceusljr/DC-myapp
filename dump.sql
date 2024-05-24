@@ -22,3 +22,10 @@ INSERT INTO produtos (nome, descricao, imagem_url, preco) VALUES
 ('Monster Energy', 'Bebida energética que fornece energia instantânea.', 'https://imgbb.com/0c0y0c0.jpg', 3.49);
 
 -- docker exec -i database mariadb -u root -pr00t myapp < dump.sql
+
+-- DELETE FROM produtos
+-- WHERE id IN (
+--   SELECT id FROM (
+--     SELECT id FROM produtos ORDER BY id LIMIT 10, 20
+--   ) AS subquery
+-- );
